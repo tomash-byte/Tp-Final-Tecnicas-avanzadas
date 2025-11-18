@@ -63,7 +63,7 @@ Para crear la tabla manualmente:
 
 
 ------------------------------------------------------------
-  VERIFICAR CONEXIÓN DESDE PYTHON
+  VERIFICAR CONEXION DESDE PYTHON
 
 1. Abrí VS Code.
 2. Abrí el archivo main.py.
@@ -98,7 +98,7 @@ Para crear la tabla manualmente:
    6. Salir (Exit)
 
 ------------------------------------------------------------
-  PRUEBA RÁPIDA
+  PRUEBA RAPIDA
 
 1. Elegí la opción 1 y agregá un nuevo socio.
 2. Luego elegí la opción 2 para ver la lista de socios.
