@@ -1,17 +1,18 @@
-import mysql.connector 
+import mysql.connector
 from mysql.connector import Error
+import re
+from datetime import datetime
 
 
-
-                 # Configuración de la conexión a MySQL (ajusta host, user, password si es necesario)
+###Configuración de conexión
 DB_CONFIG = {
     'host': 'localhost',
-    'user': 'root',
-    'password': '',  # Cambia si tienes contraseña
+    'user': 'appuser',
+    'password': 'app_pass',
     'database': 'centro_deportivo'
 }
 
-                # Función para conectar a la base de datos
+#Conexión a la base de datos
 def get_db_connection():
     try:
         conn = mysql.connector.connect(**DB_CONFIG)
@@ -20,7 +21,7 @@ def get_db_connection():
         print(f"Error al conectar a MySQL: {e}")
         return None
 
-                # Inicializar la base de datos (ejecutar el SQL si no está hecho)
+###inicializar base de datos
 def init_db():
     conn = get_db_connection()
     if conn:
@@ -28,7 +29,6 @@ def init_db():
         try:
             with open('../dbf/database.sql', 'r') as f:
                 sql_script = f.read()
-                                    # Ejecutar el script (dividido por ; para múltiples statements)
                 for statement in sql_script.split(';'):
                     if statement.strip():
                         cursor.execute(statement)
@@ -40,14 +40,42 @@ def init_db():
             cursor.close()
             conn.close()
 
-                   # CREATE: Agregar un nuevo miembro
+##Validaciones
+def validar_email(email):
+    patron = r'^[\w\.-]+@[\w\.-]+\.\w+$'
+    return re.match(patron, email)
+
+def validar_fecha(fecha):
+    try:
+        datetime.strptime(fecha, "%Y-%m-%d")
+        return True
+    except ValueError:
+        return False
+
+def continuar():
+    opcion = input("\n¿Deseás realizar otra operación? (s/n): ").strip().lower()
+    return opcion == 's'
+
+#CREATE
 def create_member():
     name = input("Nombre: ")
-    email = input("Email: ")
-    join_date = input("Fecha de nacimiento (YYYY-MM-DD): ")
+
+    while True:
+        email = input("Email: ")
+        if validar_email(email):
+            break
+        else:
+            print(" Mail inválido.")
+
+    while True:
+        join_date = input("Fecha de nacimiento (YYYY-MM-DD): ")
+        if validar_fecha(join_date):
+            break
+        else:
+            print(" Fecha inválida. Usá el formato YYYY-MM-DD.")
+
     nationality_type = input("Nacionalidad: ")
 
-    
     conn = get_db_connection()
     if conn:
         cursor = conn.cursor()
@@ -55,14 +83,14 @@ def create_member():
             cursor.execute('INSERT INTO members (name, email, nationality_type, join_date) VALUES (%s, %s, %s, %s)',
                            (name, email, nationality_type, join_date))
             conn.commit()
-            print("Socio agregado exitosamente.")
+            print(" Socio agregado exitosamente.")
         except Exception as e:
-            print(f"Error: {e}")
+            print(f" Error: {e}")
         finally:
             cursor.close()
             conn.close()
 
-                       # READ: Listar todos los miembros
+
 def read_members():
     conn = get_db_connection()
     if conn:
@@ -71,7 +99,7 @@ def read_members():
         members = cursor.fetchall()
         cursor.close()
         conn.close()
-        
+
         if members:
             print("\nLista de socios:")
             for member in members:
@@ -79,7 +107,7 @@ def read_members():
         else:
             print("No existen socios registrados.")
 
-                  # READ: Buscar un miembro por ID
+# ID
 def read_member_by_id():
     member_id = int(input("ID del socio: "))
     conn = get_db_connection()
@@ -89,20 +117,33 @@ def read_member_by_id():
         member = cursor.fetchone()
         cursor.close()
         conn.close()
-        
+
         if member:
             print(f"ID: {member[0]}, Nombre: {member[1]}, Email: {member[2]}, Nacionalidad: {member[3]}, Fecha: {member[4]}")
         else:
             print("No se pudo encontrar el socio.")
 
-                 # UPDATE: Modificar un miembro
+#UPDATE
 def update_member():
     member_id = int(input("ID del socio a actualizar: "))
-    name = input("Nuevo nombre (deja vacío para no cambiar): ")
-    email = input("Nuevo email (deja vacío para no cambiar): ")
-    membership_type = input("Nuevo tipo de membresía (deja vacío para no cambiar): ")
-    join_date = input("Nueva fecha de ingreso (YYYY-MM-DD, deja vacío para no cambiar): ")
-    
+    name = input("Nuevo nombre : ")
+
+    while True:
+        email = input("Nuevo email : ")
+        if not email or validar_email(email):
+            break
+        else:
+            print(" Email inválido. Intentá nuevamente.")
+
+    membership_type = input("Nuevo tipo de cuota (deja vacío para no cambiar): ")
+
+    while True:
+        join_date = input("Nueva fecha de nacimiento (YYYY-MM-DD): ")
+        if not join_date or validar_fecha(join_date):
+            break
+        else:
+            print(" Fecha de nacimiento inválida. Usá el formato YYYY-MM-DD.")
+
     conn = get_db_connection()
     if conn:
         cursor = conn.cursor()
@@ -112,7 +153,7 @@ def update_member():
             cursor.close()
             conn.close()
             return
-        
+
         updates = []
         params = []
         if name:
@@ -127,22 +168,22 @@ def update_member():
         if join_date:
             updates.append("join_date = %s")
             params.append(join_date)
-        
+
         if updates:
             query = f"UPDATE members SET {', '.join(updates)} WHERE id = %s"
             params.append(member_id)
             try:
                 cursor.execute(query, params)
                 conn.commit()
-                print("Socio actualizado exitosamente.")
+                print(" Socio actualizado exitosamente.")
             except Exception as e:
-                print(f"Error: {e}")
+                print(f" Error: {e}")
         else:
             print("No se realizaron cambios.")
         cursor.close()
         conn.close()
 
-                 # DELETE: Eliminar un miembro
+#DELETE
 def delete_member():
     member_id = int(input("ID del socio a eliminar: "))
     conn = get_db_connection()
@@ -154,30 +195,30 @@ def delete_member():
             cursor.close()
             conn.close()
             return
-        
+
         confirm = input("¿Estás seguro de eliminar este socio? (s/n): ").lower()
         if confirm == 's':
             cursor.execute('DELETE FROM members WHERE id = %s', (member_id,))
             conn.commit()
-            print("El socio ha sido eliminado exitosamente.")
+            print(" El socio ha sido eliminado exitosamente.")
         else:
-            print("Eliminación de carnet cancelada.")
+            print("Eliminación de socio cancelada.")
         cursor.close()
         conn.close()
 
-                # Menú principal
+#MAIN MENU
 def main():
     init_db()
     while True:
-        print("\n--- CRUD Centro Deportivo ---")
-        print("1. Agregar socio (Create)")
-        print("2. Listar socios (Read)")
-        print("3. Buscar socios por ID (Read)")
-        print("4. Actualizar socio (Update)")
-        print("5. Eliminar socio (Delete)")
-        print("6. Salir")
+        print("\n---Centro Deportivo TFC ---")
+        print("1. Agregar socio ")  #create
+        print("2. Lista de socios ") #read
+        print("3. Buscar socios por Id. ") #read id
+        print("4. Actualizar socio existente ") #update
+        print("5. Eliminar socio ") #delete
+        print("6. Salir") #exit
         choice = input("Elige una opción: ")
-        
+
         if choice == '1':
             create_member()
         elif choice == '2':
@@ -189,11 +230,14 @@ def main():
         elif choice == '5':
             delete_member()
         elif choice == '6':
-            print("¡Hasta luego!")
+            print(" Hasta luego!")
             break
         else:
-            print("Opción inválida.")
+            print(" Opción inválida.")
+
+        if choice != '6' and not continuar():
+            print(" Gracias por usar el sistema de TFC ")
+            break
 
 if __name__ == '__main__':
     main()
-
