@@ -2,7 +2,7 @@
 Proyecto final para la promoción de la materia
 
 
-  CRUD ---- Centro Deportivo de Futbol
+  CRUD ---- Centro Deportivo TFC --------
 
 Aplicación de consola sobre Python, para gestionar socios de un centro deportivo utilizando MySQL como base de datos.
 
@@ -23,11 +23,11 @@ Aplicación de consola sobre Python, para gestionar socios de un centro deportiv
    pip install mysql-connector-python
 
 ------------------------------------------------------------
- CONFIGURACIÓN DE MYSQL
+ CONFIGURACIÓN DE MySQL
 
 1. Abrí CMD y conectate como root:
 
-   cd "C:\Program Files\MySQL\MySQL Server 8.0\bin"
+   cd "C:\Program Files\MySQL\MySQL Server 8.0\bin" o donde este alojado MySQL
    mysql -u root -p
 
 2. Dentro del cliente MySQL, ejecutá:
@@ -45,11 +45,11 @@ Aplicación de consola sobre Python, para gestionar socios de un centro deportiv
    SHOW TABLES;
 
 ------------------------------------------------------------
-  CREAR LA TABLA MEMBERS
+  CREAR LA TABLA MEMBERERS
 
 Si no existe la tabla, tenes que crearla manualmente o usar el archivo database.sql.
 
-Opción a: Crearla manualmente
+Crear la tabla manualmente:
 
    CREATE TABLE IF NOT EXISTS members (
        id INT AUTO_INCREMENT PRIMARY KEY,
@@ -60,9 +60,6 @@ Opción a: Crearla manualmente
        join_date DATE NOT NULL
    );
 
-Opción b: Usar el script
-
-   ·source ruta/a/dbf/database.sql
 
 ------------------------------------------------------------
   VERIFICAR CONEXIÓN DESDE PYTHON
@@ -91,13 +88,13 @@ Opción b: Usar el script
 
 3. Verás el menú interactivo:
 
-   --- CRUD Centro Deportivo ---
+   ---Centro Deportivo TFC ---
    1. Agregar socio (Create)
-   2. Listar socios (Read)
-   3. Buscar socios por ID (Read)
+   2. Lista de socios (Read)
+   3. Buscar socios por Id. (Read)
    4. Actualizar socio (Update)
    5. Eliminar socio (Delete)
-   6. Salir
+   6. Salir (Exit)
 
 ------------------------------------------------------------
   PRUEBA RÁPIDA
