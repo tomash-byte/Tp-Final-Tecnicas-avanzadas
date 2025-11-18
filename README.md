@@ -39,17 +39,18 @@ Aplicación de consola sobre Python, para gestionar socios de un centro deportiv
    GRANT ALL PRIVILEGES ON centro_deportivo.* TO 'appuser'@'localhost';
    FLUSH PRIVILEGES;
 
-3. Seleccioná la base de datos y verificá que esté vacía o tenga la tabla members:
+3. Seleccioná la base de datos y verificá que la tabla members esté vacía:
 
    USE centro_deportivo;
    SHOW TABLES;
 
 ------------------------------------------------------------
-  CREAR LA TABLA MEMBERERS
+  
+CREAR LA TABLA MEMBERERS
 
-Si no existe la tabla, tenes que crearla manualmente o usar el archivo database.sql.
+Si la tabla no existe, tenes que crearla manualmente o usar el archivo database.sql. (sí funciona...)
 
-Crear la tabla manualmente:
+Para crear la tabla manualmente:
 
    CREATE TABLE IF NOT EXISTS members (
        id INT AUTO_INCREMENT PRIMARY KEY,
@@ -82,11 +83,11 @@ Crear la tabla manualmente:
 
    ·cd ruta/a/crud_centro_deportivo
 
-2. Ejecutá el script:
+2. Ejecutá el script desde la consola:
 
    ·python main.py
 
-3. Verás el menú interactivo:
+3. Se mostrará el menú interactivo:
 
    ---Centro Deportivo TFC ---
    1. Agregar socio (Create)
@@ -99,7 +100,7 @@ Crear la tabla manualmente:
 ------------------------------------------------------------
   PRUEBA RÁPIDA
 
-1. Elegí la opción 1 y agregá un socio.
+1. Elegí la opción 1 y agregá un nuevo socio.
 2. Luego elegí la opción 2 para ver la lista de socios.
 3. Tambien, podes probar las demás funciones para editar, buscar o eliminar.
 
